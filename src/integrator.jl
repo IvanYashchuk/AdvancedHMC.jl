@@ -14,10 +14,13 @@ function (::Leapfrog)(ϵ::AbstractFloat)
     return Leapfrog(ϵ)
 end
 
-function lf_momentum(ϵ::T,
-        h::Hamiltonian, θ::AbstractVector{T},
-        r::AbstractVector{T}; termination::Tt = Termination()
-    ) where {T<:Real, Tt}
+function lf_momentum(
+    ϵ::T,
+    h::Hamiltonian,
+    θ::AbstractVector{T},
+    r::AbstractVector{T};
+    termination::Tt = Termination()
+) where {T<:Real, Tt}
     _∂H∂θ = ∂H∂θ(h, θ)
     termination = combine(Termination(_∂H∂θ), termination)
     if !is_terminated(termination)
@@ -26,10 +29,13 @@ function lf_momentum(ϵ::T,
     return r, termination
 end
 
-function lf_position(ϵ::T,
-        h::Hamiltonian, θ::AbstractVector{T},
-        r::AbstractVector{T}; termination::Tt = Termination()
-        ) where {T<:Real, Tt}
+function lf_position(
+    ϵ::T,
+    h::Hamiltonian,
+    θ::AbstractVector{T},
+    r::AbstractVector{T};
+    termination::Tt = Termination()
+) where {T<:Real, Tt}
     _∂H∂r = ∂H∂r(h, r)
     termination = combine(Termination(_∂H∂r), termination)
     # Only update θ if previous udpates to r has no numerical issue.
@@ -40,10 +46,13 @@ function lf_position(ϵ::T,
 end
 
 # TODO: double check the function below to see if it is type stable or not
-function step(lf::Leapfrog{F},
-        h::Hamiltonian, θ::AbstractVector{T},
-        r::AbstractVector{T}, n_steps::Int=1
-    ) where {F<:AbstractFloat,T<:Real}
+function step(
+    lf::Leapfrog{F},
+    h::Hamiltonian,
+    θ::AbstractVector{T},
+    r::AbstractVector{T},
+    n_steps::Int=1
+) where {F<:AbstractFloat,T<:Real}
     fwd = n_steps > 0 # simulate hamiltonian backward when n_steps < 0
     _n_steps = abs(n_steps)
     ϵ = fwd ? lf.ϵ : - lf.ϵ
