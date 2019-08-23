@@ -432,19 +432,20 @@ function transition(
         # update termination
         termination = termination * termination′ * isterminated(h, tree)
     end
-
+    
+    z = zcand   # NUTS always accept the candicate
     stat = (
         step_size=τ.integrator.ϵ, 
         n_steps=tree.nα, 
         is_accept=true, 
         acceptance_rate=tree.sum_α / tree.nα, 
-        log_density=zcand.ℓπ.value, 
-        hamiltonian_energy=energy(zcand), 
-        logdensity=zcand.ℓπ.value,
+        log_density=z.ℓπ.value, 
+        hamiltonian_energy=energy(z), 
+        logdensity=z.ℓπ.value,
         tree_depth=j, 
         numerical_error=termination.numerical,
        )
-    return zcand, stat
+    return z, stat
 end
 
 """
